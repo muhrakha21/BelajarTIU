@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AceTIU v2 — Belajar TIU CPNS + AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060810;
+  --s1: #0d1117;
+  --s2: #131920;
+  --s3: #1a2230;
+  --border: #1e2d3d;
+  --border2: #243040;
+  --blue: #4f9cf9;
+  --cyan: #00d2c6;
+  --purple: #9b74f7;
+  --gold: #f5c842;
+  --green: #22d47a;
+  --red: #f05257;
+  --orange: #ff8c42;
+  --text: #dde6f0;
+  --text2: #8ba0b5;
+  --text3: #4d6478;
+  --r: 14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* animated grid bg */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(79,156,249,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(79,156,249,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 15%,rgba(79,156,249,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 85%,rgba(155,116,247,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,210,198,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* ═══ HEADER ═══ */
+header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(6,8,16,0.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.logo{
+  font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  flex-shrink:0;
+}
+.logo sub{font-size:0.6rem;-webkit-text-fill-color:var(--text3);font-weight:500;letter-spacing:1px;vertical-align:middle;}
+
+.hstats{display:flex;gap:8px;align-items:center;overflow-x:auto;}
+.hstat{
+  display:flex;align-items:center;gap:5px;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;
+  font-size:0.72rem;color:var(--text2);white-space:nowrap;flex-shrink:0;
+}
+.hstat b{color:var(--cyan);}
+.streak-fire{color:var(--orange);}
+
+/* ═══ LAYOUT ═══ */
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px;position:relative;z-index:1;}
+
+/* ═══ NAV TABS ═══ */
+.nav{
+  display:flex;gap:4px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:4px;margin-bottom:20px;
+  overflow-x:auto;
+}
+.nav-btn{
+  flex:1;min-width:max-content;
+  padding:9px 16px;border:none;border-radius:10px;
+  background:transparent;color:var(--text3);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:600;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.nav-btn.on{
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  color:#fff;box-shadow:0 4px 18px rgba(79,156,249,0.25);
+}
+.nav-btn:hover:not(.on){color:var(--text);background:var(--s3);}
+
+/* ═══ PAGES ═══ */
+.page{display:none;}
+.page.on{display:block;}
+
+/* ═══ SECTION HEADER ═══ */
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;flex-wrap:wrap;gap:8px;
+}
+.sec-title{font-size:0.78rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+
+/* ═══ CHIPS ═══ */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.chip{
+  padding:5px 14px;border:1px solid var(--border);border-radius:20px;
+  background:transparent;color:var(--text3);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;font-weight:600;
+  cursor:pointer;transition:all 0.18s;
+}
+.chip.on{border-color:var(--blue);color:var(--blue);background:rgba(79,156,249,0.08);}
+.chip.mudah.on{border-color:var(--green);color:var(--green);background:rgba(34,212,122,0.08);}
+.chip.sedang.on{border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,0.08);}
+.chip.sulit.on{border-color:var(--red);color:var(--red);background:rgba(240,82,87,0.08);}
+
+/* ═══ STATS ROW ═══ */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.stat-box{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;text-align:center;
+}
+.stat-box .v{font-size:1.7rem;font-weight:800;font-family:'Fira Code',monospace;}
+.stat-box .l{font-size:0.7rem;color:var(--text3);margin-top:3px;font-weight:500;}
+.stat-box.g .v{color:var(--green);}
+.stat-box.r .v{color:var(--red);}
+.stat-box.b .v{color:var(--cyan);}
+
+/* ═══ QUESTION CARD ═══ */
+@keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.q-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:18px;padding:28px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+  animation:slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.q-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple));
+}
+
+/* AI badge pulse */
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.ai-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(155,116,247,0.12);border:1px solid rgba(155,116,247,0.25);
+  border-radius:20px;padding:3px 10px;
+  font-size:0.68rem;font-weight:700;color:var(--purple);
+}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:pulse 1.5s infinite;}
+
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.badge{font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:8px;text-transform:uppercase;letter-spacing:0.4px;}
+.badge.mudah{background:rgba(34,212,122,0.12);color:var(--green);}
+.badge.sedang{background:rgba(245,200,66,0.12);color:var(--gold);}
+.badge.sulit{background:rgba(240,82,87,0.12);color:var(--red);}
+.badge.kat{background:rgba(79,156,249,0.1);color:var(--blue);}
+.q-num{font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--text3);}
+
+.q-text{font-size:1rem;line-height:1.8;color:var(--text);margin-bottom:22px;font-weight:400;}
+.q-text code{font-family:'Fira Code',monospace;background:var(--s3);padding:2px 7px;border-radius:5px;font-size:0.9em;color:var(--cyan);}
+
+/* ═══ OPTIONS ═══ */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:580px){.opts{grid-template-columns:1fr;}}
+.opt{
+  background:var(--s2);border:1.5px solid var(--border);
+  border-radius:12px;padding:13px 16px;
+  display:flex;align-items:flex-start;gap:10px;
+  color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.88rem;cursor:pointer;transition:all 0.18s;text-align:left;
+}
+.opt:hover:not(:disabled){border-color:var(--blue);background:rgba(79,156,249,0.06);transform:translateY(-1px);}
+.opt-l{
+  width:24px;height:24px;border-radius:7px;flex-shrink:0;
+  background:var(--s3);display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:700;transition:all 0.18s;
+}
+.opt.correct{border-color:var(--green);background:rgba(34,212,122,0.07);}
+.opt.correct .opt-l{background:var(--green);color:#000;}
+.opt.wrong{border-color:var(--red);background:rgba(240,82,87,0.06);}
+.opt.wrong .opt-l{background:var(--red);color:#fff;}
+.opt:disabled{cursor:default;}
+
+/* ═══ FEEDBACK ═══ */
+@keyframes fb-in{from{opacity:0;max-height:0;}to{opacity:1;max-height:300px;}}
+.feedback{
+  margin-top:14px;padding:16px 18px;border-radius:12px;
+  display:none;animation:fb-in 0.3s ease;
+}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(34,212,122,0.07);border:1px solid rgba(34,212,122,0.2);}
+.feedback.ng{background:rgba(240,82,87,0.06);border:1px solid rgba(240,82,87,0.2);}
+.fb-title{font-weight:700;font-size:0.88rem;margin-bottom:7px;}
+.feedback.ok .fb-title{color:var(--green);}
+.feedback.ng .fb-title{color:var(--red);}
+.fb-body{font-size:0.83rem;color:var(--text2);line-height:1.65;}
+.tip-box{
+  margin-top:10px;padding:11px 14px;
+  background:rgba(79,156,249,0.07);border:1px solid rgba(79,156,249,0.15);
+  border-radius:9px;font-size:0.8rem;color:var(--text2);line-height:1.6;
+}
+.tip-box strong{color:var(--blue);}
+
+/* ═══ ACTION ROW ═══ */
+.act-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.btn{
+  padding:11px 22px;border-radius:11px;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;font-weight:700;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-p{
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  color:#fff;box-shadow:0 4px 16px rgba(79,156,249,0.25);
+}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,156,249,0.35);}
+.btn-p:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-ai{
+  background:linear-gradient(135deg,var(--purple),#c44dff);
+  color:#fff;box-shadow:0 4px 16px rgba(155,116,247,0.25);
+}
+.btn-ai:hover{transform:translateY(-2px);}
+.btn-ai:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-g{
+  background:var(--s2);border:1px solid var(--border);color:var(--text2);
+}
+.btn-g:hover{border-color:var(--cyan);color:var(--text);}
+
+/* ═══ AI LOADING ═══ */
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-loading{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:40px;color:var(--text2);font-size:0.88rem;
+}
+.ai-spin{
+  width:22px;height:22px;border:2px solid var(--border);
+  border-top-color:var(--purple);border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+
+/* ═══ PROGRESS BAR ═══ */
+.pbar{height:3px;background:var(--border);border-radius:2px;margin-bottom:18px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:2px;transition:width 0.4s ease;}
+
+/* ═══ TIMER ═══ */
+.timer{
+  font-family:'Fira Code',monospace;font-size:0.88rem;
+  background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.2);
+  color:var(--gold);border-radius:9px;padding:5px 14px;
+}
+.timer.urgent{color:var(--red);border-color:rgba(240,82,87,0.3);background:rgba(240,82,87,0.08);}
+
+/* ═══ TRYOUT ═══ */
+.to-hero{
+  text-align:center;padding:40px 20px;
+}
+.to-hero h2{font-size:1.5rem;font-weight:800;margin-bottom:10px;}
+.to-hero p{color:var(--text2);font-size:0.88rem;line-height:1.7;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto;}
+.to-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:500px;margin:0 auto;}
+@media(max-width:480px){.to-cards{grid-template-columns:1fr;}}
+.to-card{
+  background:var(--s2);border:1px solid var(--border);border-radius:16px;
+  padding:22px;text-align:center;cursor:pointer;transition:all 0.2s;
+}
+.to-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.to-card .ico{font-size:2.2rem;margin-bottom:10px;}
+.to-card h3{font-size:0.95rem;font-weight:700;margin-bottom:6px;}
+.to-card p{font-size:0.78rem;color:var(--text3);}
+.to-card .sub{margin-top:10px;font-size:0.75rem;color:var(--blue);font-weight:600;}
+
+/* ═══ RESULT ═══ */
+.result-wrap{text-align:center;padding:36px 20px;}
+.result-emoji{font-size:4rem;margin-bottom:14px;}
+.result-score{
+  font-size:3.5rem;font-weight:800;
+  font-family:'Fira Code',monospace;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.result-msg{color:var(--text2);margin:10px 0 24px;}
+.review-list{max-height:380px;overflow-y:auto;text-align:left;}
+.review-item{
+  margin-bottom:8px;padding:11px 14px;
+  background:var(--s1);border-radius:10px;font-size:0.8rem;
+  border-left:3px solid var(--border);
+}
+.review-item.ok{border-left-color:var(--green);}
+.review-item.ng{border-left-color:var(--red);}
+.review-q{color:var(--text);margin-bottom:4px;font-weight:500;}
+.review-ans{color:var(--text3);}
+.review-ans b{color:var(--green);}
+
+/* ═══ MATERI ═══ */
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.mat-grid{grid-template-columns:1fr;}}
+.mat-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:14px;
+  padding:18px;cursor:pointer;transition:all 0.2s;
+}
+.mat-card:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.mat-ico{font-size:1.8rem;margin-bottom:8px;}
+.mat-title{font-weight:700;font-size:0.9rem;margin-bottom:5px;}
+.mat-desc{font-size:0.78rem;color:var(--text3);line-height:1.5;}
+.mat-detail{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:16px;padding:22px;margin-top:14px;
+}
+.mat-detail h3{font-size:0.88rem;font-weight:700;color:var(--cyan);margin-bottom:14px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:540px){.fgrid{grid-template-columns:1fr;}}
+.fitem{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:10px;padding:13px;
+}
+.fn{font-size:0.72rem;color:var(--text3);margin-bottom:6px;font-weight:600;}
+.ff{font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--cyan);line-height:1.55;}
+.fe{font-size:0.75rem;color:var(--text3);margin-top:5px;line-height:1.4;}
+
+/* ═══ TIPS ═══ */
+.tips-wrap{
+  background:var(--s1);border:1px solid rgba(0,210,198,0.15);
+  border-radius:16px;padding:22px;margin-bottom:14px;
+}
+.tips-title{font-size:0.85rem;font-weight:700;color:var(--cyan);margin-bottom:14px;}
+.tip-row{display:flex;gap:10px;margin-bottom:11px;font-size:0.83rem;color:var(--text2);line-height:1.6;}
+.tip-row span:first-child{color:var(--cyan);flex-shrink:0;font-weight:700;}
+.cs-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:16px;padding:22px;margin-bottom:14px;
+}
+.cs-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:14px;}
+
+/* ═══ TOAST ═══ */
+@keyframes toastIn{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes toastOut{from{opacity:1;}to{opacity:0;}}
+.toast{
+  position:fixed;bottom:20px;right:20px;z-index:999;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 18px;
+  font-size:0.83rem;max-width:260px;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.toast.show{animation:toastIn 0.3s forwards;}
+
+/* ═══ AI MODE INDICATOR ═══ */
+.mode-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:12px;padding:10px 16px;margin-bottom:16px;
+  font-size:0.8rem;
+}
+.mode-label{color:var(--text3);}
+.mode-toggle{
+  display:flex;align-items:center;gap:8px;
+}
+.toggle-switch{
+  width:36px;height:20px;background:var(--border);
+  border-radius:10px;position:relative;cursor:pointer;
+  transition:background 0.2s;
+}
+.toggle-switch.on{background:var(--purple);}
+.toggle-knob{
+  width:16px;height:16px;background:#fff;border-radius:50%;
+  position:absolute;top:2px;left:2px;transition:left 0.2s;
+}
+.toggle-switch.on .toggle-knob{left:18px;}
+.toggle-label{color:var(--text2);font-size:0.78rem;font-weight:600;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Ace<span style="-webkit-text-fill-color:var(--text3);font-weight:300;font-size:0.9rem;">TIU</span> <sub>v2</sub></div>
+  <div class="hstats">
+    <div class="hstat"><span class="streak-fire">🔥</span> Streak <b id="h-streak">0</b></div>
+    <div class="hstat">✅ Benar <b id="h-benar">0</b></div>
+    <div class="hstat">📝 Soal <b id="h-total">0</b></div>
+    <div class="hstat" id="h-ai-count" style="display:none">🤖 AI <b id="h-ai">0</b></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="nav">
+    <button class="nav-btn on" onclick="gotoPage('latihan')">🎯 Latihan</button>
+    <button class="nav-btn" onclick="gotoPage('tryout')">⏱️ Try Out</button>
+    <button class="nav-btn" onclick="gotoPage('materi')">📖 Materi</button>
+    <button class="nav-btn" onclick="gotoPage('tips')">💡 Tips</button>
+  </div>
+
+  <!-- ══════════ PAGE LATIHAN ══════════ -->
+  <div id="pg-latihan" class="page on">
+
+    <div class="mode-bar">
+      <span class="mode-label">🤖 Soal dari AI (Claude)</span>
+      <div class="mode-toggle">
+        <div class="toggle-switch on" id="ai-toggle" onclick="toggleAI()">
+          <div class="toggle-knob"></div>
+        </div>
+        <span class="toggle-label" id="ai-toggle-label">Aktif</span>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <span class="sec-title">Kategori</span>
+    </div>
+    <div class="chips" id="kat-chips">
+      <button class="chip on" onclick="setKat('all',this)">Semua</button>
+      <button class="chip" onclick="setKat('analogi',this)">Analogi Verbal</button>
+      <button class="chip" onclick="setKat('silogisme',this)">Silogisme</button>
+      <button class="chip" onclick="setKat('deret',this)">Deret Angka</button>
+      <button class="chip" onclick="setKat('aritmatika',this)">Aritmatika</button>
+      <button class="chip" onclick="setKat('logika',this)">Logika Formal</button>
+      <button class="chip" onclick="setKat('peluang',this)">Peluang</button>
+    </div>
+
+    <div class="chips">
+      <button class="chip mudah on" id="d-mudah" onclick="toggleDiff('mudah')">🟢 Mudah</button>
+      <button class="chip sedang on" id="d-sedang" onclick="toggleDiff('sedang')">🟡 Sedang</button>
+      <button class="chip sulit on" id="d-sulit" onclick="toggleDiff('sulit')">🔴 Sulit</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box g"><div class="v" id="s-benar">0</div><div class="l">Benar</div></div>
+      <div class="stat-box r"><div class="v" id="s-salah">0</div><div class="l">Salah</div></div>
+      <div class="stat-box b"><div class="v" id="s-total">0</div><div class="l">Dijawab</div></div>
+    </div>
+
+    <div id="q-area"></div>
+
+    <div class="act-row">
+      <button class="btn btn-p" onclick="loadNextQ()">Soal Berikutnya ➡</button>
+      <button class="btn btn-ai" id="btn-ai-gen" onclick="genAIQuestion()">🤖 Soal Baru dari AI</button>
+      <button class="btn btn-g" onclick="shuffleNext()">🔀 Acak</button>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE TRYOUT ══════════ -->
+  <div id="pg-tryout" class="page">
+    <div id="to-home">
+      <div class="to-hero">
+        <div style="font-size:3rem;margin-bottom:12px">⏱️</div>
+        <h2>Simulasi Try Out</h2>
+        <p>Ujian simulasi lengkap dengan timer. Pilih jenis soal dan mulai sekarang!</p>
+      </div>
+      <div class="to-cards">
+        <div class="to-card" onclick="startTO('tiu')">
+          <div class="ico">🎯</div>
+          <h3>TIU CPNS</h3>
+          <p>Semua kategori TIU</p>
+          <div class="sub">20 soal • 25 menit</div>
+        </div>
+        <div class="to-card" onclick="startTO('matlog')">
+          <div class="ico">🔢</div>
+          <h3>Matematika Logika</h3>
+          <p>Fokus aritmatika, logika, deret</p>
+          <div class="sub">15 soal • 20 menit</div>
+        </div>
+        <div class="to-card" onclick="startTO('verbal')">
+          <div class="ico">🔤</div>
+          <h3>Verbal</h3>
+          <p>Analogi & silogisme</p>
+          <div class="sub">15 soal • 15 menit</div>
+        </div>
+        <div class="to-card" onclick="startTO('ai')" style="border-color:rgba(155,116,247,0.3);background:rgba(155,116,247,0.05)">
+          <div class="ico">🤖</div>
+          <h3>AI-Generated</h3>
+          <p>Soal fresh dari Claude AI</p>
+          <div class="sub">10 soal AI • 15 menit</div>
+        </div>
+      </div>
+    </div>
+    <div id="to-session" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <span>Soal <b id="to-cur">1</b> dari <b id="to-tot">20</b></span>
+        <div class="timer" id="to-timer">25:00</div>
+      </div>
+      <div class="pbar"><div class="pfill" id="to-pbar" style="width:0%"></div></div>
+      <div id="to-q-area"></div>
+      <div class="act-row">
+        <button class="btn btn-p" onclick="toNext()">Lanjut ➡</button>
+        <button class="btn btn-g" onclick="finishTO()">Selesai & Lihat Skor</button>
+      </div>
+    </div>
+    <div id="to-result" style="display:none"></div>
+  </div>
+
+  <!-- ══════════ PAGE MATERI ══════════ -->
+  <div id="pg-materi" class="page">
+    <div class="mat-grid">
+      <div class="mat-card" onclick="showMat('analogi')"><div class="mat-ico">🔗</div><div class="mat-title">Analogi Verbal</div><div class="mat-desc">Hubungan kata, padanan makna, sinonim-antonim</div></div>
+      <div class="mat-card" onclick="showMat('silogisme')"><div class="mat-ico">🧩</div><div class="mat-title">Silogisme & Logika</div><div class="mat-desc">Premis, konklusi, modus ponens, modus tollens</div></div>
+      <div class="mat-card" onclick="showMat('deret')"><div class="mat-ico">🔢</div><div class="mat-title">Deret Angka</div><div class="mat-desc">Aritmatika, geometri, Fibonacci, pola campuran</div></div>
+      <div class="mat-card" onclick="showMat('aritmatika')"><div class="mat-ico">📐</div><div class="mat-title">Aritmatika</div><div class="mat-desc">Persentase, rasio, persamaan, pekerjaan, kecepatan</div></div>
+      <div class="mat-card" onclick="showMat('peluang')"><div class="mat-ico">🎲</div><div class="mat-title">Peluang & Statistik</div><div class="mat-desc">Kombinasi, permutasi, mean, median, modus</div></div>
+      <div class="mat-card" onclick="showMat('logika')"><div class="mat-ico">🧠</div><div class="mat-title">Logika Formal</div><div class="mat-desc">Proposisi, implikasi, negasi, kontraposisi</div></div>
+    </div>
+    <div id="mat-content"></div>
+  </div>
+
+  <!-- ══════════ PAGE TIPS ══════════ -->
+  <div id="pg-tips" class="page">
+    <div class="cs-card">
+      <div class="cs-title">⚡ Rumus Kilat — Cheat Sheet</div>
+      <div class="fgrid">
+        <div class="fitem"><div class="fn">Deret Aritmatika</div><div class="ff">Un = a+(n-1)d<br>Sn = n/2·(2a+(n-1)d)</div><div class="fe">1,4,7,10 → d=3, U₅=13</div></div>
+        <div class="fitem"><div class="fn">Deret Geometri</div><div class="ff">Un = a·r^(n-1)<br>Sn = a(rⁿ-1)/(r-1)</div><div class="fe">2,6,18 → r=3, U₄=54</div></div>
+        <div class="fitem"><div class="fn">Kombinasi & Permutasi</div><div class="ff">C(n,r) = n!/(r!(n-r)!)<br>P(n,r) = n!/(n-r)!</div><div class="fe">C(5,2)=10 | P(5,2)=20</div></div>
+        <div class="fitem"><div class="fn">Peluang</div><div class="ff">P(A) = n(A)/n(S)<br>P(A∪B) = P(A)+P(B)-P(A∩B)</div><div class="fe">Dadu>4: P=2/6=1/3</div></div>
+        <div class="fitem"><div class="fn">Pekerjaan Bersama</div><div class="ff">1/t = 1/tA + 1/tB<br>t = tA·tB/(tA+tB)</div><div class="fe">A=6hr, B=4hr → t=2.4hr</div></div>
+        <div class="fitem"><div class="fn">Silogisme</div><div class="ff">Ponens: P→Q, P ⊢ Q<br>Tollens: P→Q, ¬Q ⊢ ¬P<br>Kontraposisi: P→Q ≡ ¬Q→¬P</div></div>
+      </div>
+    </div>
+    <div class="tips-wrap">
+      <div class="tips-title">🎯 8 Strategi Jitu TIU CPNS</div>
+      <div class="tip-row"><span>①</span><span><b style="color:var(--text)">Baca opsi dulu</b> — Lihat pilihan sebelum baca soal panjang agar tahu apa yang dicari</span></div>
+      <div class="tip-row"><span>②</span><span><b style="color:var(--text)">Teknik eliminasi</b> — Singkirkan 2 opsi yang jelas salah, fokus ke 2 sisanya</span></div>
+      <div class="tip-row"><span>③</span><span><b style="color:var(--text)">Deret: cari selisih dulu</b> — Selisih konstan=aritmatika, rasio konstan=geometri, cek beda tingkat 2</span></div>
+      <div class="tip-row"><span>④</span><span><b style="color:var(--text)">Silogisme: diagram Venn</b> — Gambar cepat lingkaran untuk semua premis, simpulkan yang pasti benar</span></div>
+      <div class="tip-row"><span>⑤</span><span><b style="color:var(--text)">Manajemen waktu ~75 detik/soal</b> — Skip sulit, kerjakan mudah, kembali ke sulit di akhir</span></div>
+      <div class="tip-row"><span>⑥</span><span><b style="color:var(--text)">Analogi: cari hubungan spesifik</b> — Bukan sekedar "berhubungan" tapi hubungan logis: fungsi, kreator-karya, bagian-keseluruhan</span></div>
+      <div class="tip-row"><span>⑦</span><span><b style="color:var(--text)">Persentase cepat</b> — 10%=÷10, 5%=÷20, 25%=÷4, 15%=10%+5%. Kombinasikan!</span></div>
+      <div class="tip-row"><span>⑧</span><span><b style="color:var(--text)">Target 50+ soal/hari</b> — 2 minggu konsisten latihan soal lebih efektif daripada baca teori berhari-hari</span></div>
+    </div>
+    <div class="tips-wrap" style="border-color:rgba(155,116,247,0.2)">
+      <div class="tips-title" style="color:var(--purple)">🤖 Cara Pakai Fitur AI</div>
+      <div class="tip-row"><span>•</span><span>Klik <b style="color:var(--text)">🤖 Soal Baru dari AI</b> di halaman Latihan untuk mendapat soal segar dari Claude AI</span></div>
+      <div class="tip-row"><span>•</span><span>Setiap soal AI berbeda-beda dan tidak pernah mengulang persis — ideal untuk latihan intensif</span></div>
+      <div class="tip-row"><span>•</span><span>AI menghasilkan soal berdasarkan kategori dan tingkat kesulitan yang kamu pilih saat ini</span></div>
+      <div class="tip-row"><span>•</span><span>Try Out mode "🤖 AI-Generated" menggunakan 10 soal yang di-generate Claude secara real-time</span></div>
+      <div class="tip-row"><span>•</span><span>Matikan toggle AI untuk hanya gunakan soal bank tetap (tidak butuh internet)</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATIC QUESTION BANK
+// ═══════════════════════════════════════════
+const BANK = [
+  {id:1,kat:'analogi',diff:'mudah',soal:'PANAS : MATAHARI = CAHAYA : ?',opsi:['A. Lampu','B. Bulan','C. Bintang','D. Api'],jawab:'B',penjelasan:'Matahari menghasilkan panas, Bulan menghasilkan cahaya (pantulan). Hubungan: sumber → hasil.',tip:'Buat kalimat: "X adalah sumber dari Y". Cari pasangan dengan hubungan yang SAMA persis.'},
+  {id:2,kat:'analogi',diff:'mudah',soal:'DOKTER : RUMAH SAKIT = GURU : ?',opsi:['A. Buku','B. Siswa','C. Sekolah','D. Pelajaran'],jawab:'C',penjelasan:'Dokter bekerja di Rumah Sakit, Guru bekerja di Sekolah. Hubungan: profesi → tempat kerja.',tip:'Analogi profesi-tempat sangat sering di TIU. Hafal: Pilot-Kokpit, Hakim-Pengadilan, Chef-Dapur.'},
+  {id:3,kat:'analogi',diff:'sedang',soal:'KOMPOSER : SIMFONI = ARSITEK : ?',opsi:['A. Bata','B. Gedung','C. Desain','D. Biru'],jawab:'B',penjelasan:'Komposer menciptakan Simfoni, Arsitek menciptakan Gedung. Hubungan: kreator → karya.',tip:'Hubungan kreator-karya: Penulis→Novel, Sutradara→Film. Selalu cari "apa yang dihasilkan".'},
+  {id:4,kat:'analogi',diff:'sulit',soal:'TELESKOP : ASTRONOMI = STETOSKOP : ?',opsi:['A. Dokter','B. Penyakit','C. Kedokteran','D. Diagnosa'],jawab:'C',penjelasan:'Teleskop → Astronomi (bidang ilmu). Stetoskop → Kedokteran (bidang ilmu). Hubungan: alat → bidang ilmu.',tip:'Bedakan: Stetoskop:Dokter (alat-pengguna) vs Stetoskop:Kedokteran (alat-bidang ilmu).'},
+  {id:5,kat:'silogisme',diff:'mudah',soal:'Semua pegawai negeri mendapat gaji. Budi adalah pegawai negeri. Kesimpulan yang tepat?',opsi:['A. Budi mungkin dapat gaji','B. Budi pasti dapat gaji','C. Budi tidak dapat gaji','D. Belum tentu'],jawab:'B',penjelasan:'Modus Ponens: Semua A→B, Budi∈A → Budi dapat B. Kata "semua" = PASTI.',tip:'Kata kunci: "Semua" → kesimpulan PASTI. "Sebagian" → kesimpulan MUNGKIN.'},
+  {id:6,kat:'silogisme',diff:'sedang',soal:'Jika harga naik maka daya beli turun. Daya beli tidak turun. Kesimpulannya?',opsi:['A. Harga naik','B. Harga tidak naik','C. Harga mungkin naik','D. Tidak bisa disimpulkan'],jawab:'B',penjelasan:'Modus Tollens: P→Q, ¬Q → ¬P. Harga naik(P)→Daya beli turun(Q). ¬Q → ¬P = Harga tidak naik.',tip:'Modus Tollens = kontraposisi. P→Q maka ¬Q→¬P. Jangan terbalik: bukan ¬P→¬Q!'},
+  {id:7,kat:'silogisme',diff:'sulit',soal:'Semua mamalia berdarah panas. Sebagian hewan adalah mamalia. Yang PASTI benar?',opsi:['A. Semua hewan berdarah panas','B. Sebagian hewan berdarah panas','C. Tidak ada hewan berdarah panas','D. Semua yg berdarah panas adalah mamalia'],jawab:'B',penjelasan:'"Sebagian hewan=mamalia" + "semua mamalia=berdarah panas" → sebagian hewan berdarah panas.',tip:'Kekuatan kesimpulan = premis TERLEMAH. Ada "sebagian" → kesimpulan paling kuat = "sebagian".'},
+  {id:8,kat:'deret',diff:'mudah',soal:'2, 4, 6, 8, 10, ...',opsi:['A. 11','B. 12','C. 13','D. 14'],jawab:'B',penjelasan:'Deret aritmatika, beda d=2. Suku berikut = 10+2 = 12.',tip:'Langkah 1: hitung selisih antar suku. Sama → aritmatika. d = U₂-U₁.'},
+  {id:9,kat:'deret',diff:'mudah',soal:'3, 6, 12, 24, ...',opsi:['A. 36','B. 42','C. 48','D. 52'],jawab:'C',penjelasan:'Deret geometri, rasio r=2. Suku berikut = 24×2 = 48.',tip:'Selisih tidak sama? Coba bagi: U₂/U₁. Jika rasio sama di semua suku → geometri.'},
+  {id:10,kat:'deret',diff:'sedang',soal:'1, 1, 2, 3, 5, 8, 13, ...',opsi:['A. 18','B. 20','C. 21','D. 24'],jawab:'C',penjelasan:'Fibonacci: tiap suku = dua suku sebelumnya. 8+13=21.',tip:'Fibonacci sering di TIU! Hafal: 1,1,2,3,5,8,13,21,34,55,89...'},
+  {id:11,kat:'deret',diff:'sedang',soal:'2, 5, 10, 17, 26, ...',opsi:['A. 33','B. 35','C. 37','D. 39'],jawab:'C',penjelasan:'Selisih: 3,5,7,9 → naik 2. Selisih berikut=11. Jadi 26+11=37.',tip:'Selisih tidak konstan? Hitung selisih dari selisih (beda tingkat 2). Naik konstan = deret kuadrat.'},
+  {id:12,kat:'deret',diff:'sulit',soal:'3, 4, 6, 9, 13, 18, ...',opsi:['A. 22','B. 24','C. 25','D. 26'],jawab:'B',penjelasan:'Selisih: 1,2,3,4,5 → naik 1. Selisih berikut=6. Jadi 18+6=24.',tip:'Pola selisih 1,2,3,4,5... → tambah 6 → 24. Soal khas TIU tingkat sulit.'},
+  {id:13,kat:'aritmatika',diff:'mudah',soal:'Jika 3x + 7 = 22, nilai x adalah?',opsi:['A. 3','B. 4','C. 5','D. 6'],jawab:'C',penjelasan:'3x = 22-7 = 15 → x = 5.',tip:'Persamaan linear: pindahkan konstanta ke kanan, bagi koefisien.'},
+  {id:14,kat:'aritmatika',diff:'mudah',soal:'Harga Rp120.000 didiskon 25%. Harga setelah diskon?',opsi:['A. Rp80.000','B. Rp85.000','C. Rp90.000','D. Rp95.000'],jawab:'C',penjelasan:'75% × 120.000 = 90.000.',tip:'Cara cepat: harga akhir = (100%-diskon%) × harga awal. 75% × 120.000 = 0.75 × 120.000.'},
+  {id:15,kat:'aritmatika',diff:'sedang',soal:'Rasio uang Andi:Budi = 3:5. Jumlah total Rp400.000. Uang Budi?',opsi:['A. Rp150.000','B. Rp200.000','C. Rp250.000','D. Rp300.000'],jawab:'C',penjelasan:'Budi = 5/8 × 400.000 = 250.000.',tip:'Cara cepat: bagian = nilai_rasio / jumlah_semua_rasio × total. Jumlah rasio: 3+5=8.'},
+  {id:16,kat:'aritmatika',diff:'sedang',soal:'Pekerjaan selesai A dalam 6 hari, B dalam 4 hari. Bersama selesai dalam?',opsi:['A. 2,0 hari','B. 2,4 hari','C. 2,8 hari','D. 3,0 hari'],jawab:'B',penjelasan:'1/t = 1/6+1/4 = 5/12. t = 12/5 = 2,4 hari.',tip:'Pekerjaan bersama: 1/t = 1/tA + 1/tB. Rumus singkat: t = tA×tB/(tA+tB).'},
+  {id:17,kat:'aritmatika',diff:'sulit',soal:'Kereta A berangkat 07.00 kecepatan 80 km/j. Kereta B jam 09.00 kecepatan 120 km/j. B menyusul A pukul?',opsi:['A. 12.00','B. 13.00','C. 14.00','D. 15.00'],jawab:'B',penjelasan:'A sudah 160 km. Selisih kecepatan 40 km/j. Waktu kejar = 160/40 = 4 jam dari 09.00 = 13.00.',tip:'Kejar-mengejar: t = jarak_awal / selisih_kecepatan. Jarak awal = v_pertama × selisih_waktu_berangkat.'},
+  {id:18,kat:'logika',diff:'mudah',soal:'Negasi dari "Semua mahasiswa rajin belajar" adalah?',opsi:['A. Tidak ada yang rajin','B. Semua tidak rajin','C. Ada mahasiswa yang tidak rajin','D. Sebagian rajin'],jawab:'C',penjelasan:'Negasi "Semua A adalah B" = "Ada A yang bukan B".',tip:'Hukum negasi: ¬(∀x P) = ∃x ¬P. Gampang: negasi SEMUA = ADA YANG TIDAK.'},
+  {id:19,kat:'logika',diff:'sedang',soal:'"Jika cuaca cerah maka taman ramai" setara dengan?',opsi:['A. Jika taman ramai maka cuaca cerah','B. Jika cuaca tidak cerah maka taman tidak ramai','C. Jika taman tidak ramai maka cuaca tidak cerah','D. Cuaca cerah dan taman ramai'],jawab:'C',penjelasan:'P→Q setara dengan ¬Q→¬P (kontraposisi).',tip:'4 bentuk: P→Q (asli), Q→P (konvers), ¬P→¬Q (invers), ¬Q→¬P (kontraposisi). Hanya KONTRAPOSISI yang setara!'},
+  {id:20,kat:'peluang',diff:'mudah',soal:'Sebuah dadu dilempar. Peluang muncul angka prima?',opsi:['A. 1/6','B. 2/6','C. 3/6','D. 4/6'],jawab:'C',penjelasan:'Prima pada dadu: 2,3,5 → 3 angka. P = 3/6 = 1/2.',tip:'Angka prima ≤6: 2,3,5 (bukan 1, bukan 4=2×2, bukan 6=2×3).'},
+  {id:21,kat:'peluang',diff:'sedang',soal:'Dari 8 orang dipilih 3 orang. Banyaknya cara?',opsi:['A. 24','B. 56','C. 168','D. 336'],jawab:'B',penjelasan:'C(8,3) = 8!/(3!5!) = (8×7×6)/(3×2×1) = 56.',tip:'Pilih tim (tanpa urutan) = kombinasi C(n,r). Pilih ketua-wakil-sekretaris (ada urutan) = permutasi P(n,r).'},
+  {id:22,kat:'peluang',diff:'sedang',soal:'Rata-rata 5 siswa = 75. Satu siswa baru nilai 90. Rata-rata baru?',opsi:['A. 77,5','B. 77,8','C. 78','D. 78,5'],jawab:'A',penjelasan:'Total = 5×75=375. Baru = 375+90=465. Rata-rata = 465/6 = 77,5.',tip:'Total = rata-rata × jumlah data. Tambah data baru ke total, hitung ulang.'},
+  {id:23,kat:'peluang',diff:'sulit',soal:'Dua dadu dilempar. Peluang jumlah = 8?',opsi:['A. 1/12','B. 5/36','C. 1/6','D. 7/36'],jawab:'B',penjelasan:'Pasangan jumlah 8: (2,6)(3,5)(4,4)(5,3)(6,2) = 5. Total = 36. P=5/36.',tip:'2 dadu: ruang sampel = 36. Buat tabel 6×6 mental untuk soal jenis ini.'},
+  {id:24,kat:'deret',diff:'mudah',soal:'B, D, F, H, ...',opsi:['A. I','B. J','C. K','D. L'],jawab:'B',penjelasan:'B=2,D=4,F=6,H=8 → selisih 2. Berikutnya J=10.',tip:'Deret huruf: konversi A=1,B=2...Z=26. Cari pola angka, konversi balik.'},
+  {id:25,kat:'aritmatika',diff:'sedang',soal:'Umur Ayah 3× umur anak. 5 tahun lagi, Ayah 2× umur anak. Umur anak sekarang?',opsi:['A. 5 tahun','B. 8 tahun','C. 10 tahun','D. 12 tahun'],jawab:'A',penjelasan:'Anak=x, Ayah=3x. 5 tahun lagi: 3x+5=2(x+5) → x=5.',tip:'Soal umur: buat variabel, buat persamaan "sekarang" dan "nanti", selesaikan SPLDV.'},
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const S = {
+  kat:'all', diffs:['mudah','sedang','sulit'],
+  answered:false, curQ:null,
+  benar:0, salah:0, total:0, streak:0, aiCount:0,
+  usedIds:new Set(), aiEnabled:true,
+  // tryout
+  toQs:[], toIdx:0, toAnss:[], toTimerRef:null, toTimeLeft:0,
+};
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function toast(msg,ms=2800){
+  const el=document.getElementById('toast-el');
+  el.textContent=msg;el.className='toast show';
+  setTimeout(()=>el.className='toast',ms);
+}
+
+function updHdr(){
+  document.getElementById('h-streak').textContent=S.streak;
+  document.getElementById('h-benar').textContent=S.benar;
+  document.getElementById('h-total').textContent=S.total;
+  document.getElementById('h-ai').textContent=S.aiCount;
+  document.getElementById('h-ai-count').style.display=S.aiCount>0?'flex':'none';
+}
+function updStats(){
+  document.getElementById('s-benar').textContent=S.benar;
+  document.getElementById('s-salah').textContent=S.salah;
+  document.getElementById('s-total').textContent=S.total;
+}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+function gotoPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{
+    b.classList.toggle('on',['latihan','tryout','materi','tips'][i]===p);
+  });
+  if(p==='latihan'&&!S.curQ) loadNextQ();
+}
+
+// ═══════════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════════
+function setKat(k,btn){
+  S.kat=k; S.usedIds=new Set();
+  document.querySelectorAll('#kat-chips .chip').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  loadNextQ();
+}
+function toggleDiff(d){
+  const i=S.diffs.indexOf(d);
+  if(i>-1){if(S.diffs.length>1)S.diffs.splice(i,1);}
+  else S.diffs.push(d);
+  document.getElementById('d-'+d).classList.toggle('on',S.diffs.includes(d));
+}
+
+// ═══════════════════════════════════════════
+// AI TOGGLE
+// ═══════════════════════════════════════════
+function toggleAI(){
+  S.aiEnabled=!S.aiEnabled;
+  document.getElementById('ai-toggle').classList.toggle('on',S.aiEnabled);
+  document.getElementById('ai-toggle-label').textContent=S.aiEnabled?'Aktif':'Nonaktif';
+  document.getElementById('btn-ai-gen').style.opacity=S.aiEnabled?'1':'0.4';
+  toast(S.aiEnabled?'🤖 Soal AI diaktifkan':'📚 Hanya soal bank tetap');
+}
+
+// ═══════════════════════════════════════════
+// STATIC QUESTION LOADER
+// ═══════════════════════════════════════════
+function getPool(){
+  return BANK.filter(q=>(S.kat==='all'||q.kat===S.kat)&&S.diffs.includes(q.diff));
+}
+function loadNextQ(){
+  S.answered=false;
+  let pool=getPool().filter(q=>!S.usedIds.has(q.id));
+  if(!pool.length){S.usedIds=new Set();pool=getPool();if(pool.length)toast('🔄 Soal diulang dari awal!');}
+  if(!pool.length){document.getElementById('q-area').innerHTML='<div class="q-card" style="text-align:center;padding:36px;color:var(--text2)">Tidak ada soal untuk filter ini</div>';return;}
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  S.usedIds.add(q.id);S.curQ=q;
+  renderQ(q,'q-area',true);
+}
+function shuffleNext(){S.usedIds=new Set();loadNextQ();}
+
+// ═══════════════════════════════════════════
+// AI QUESTION GENERATOR
+// ═══════════════════════════════════════════
+const KAT_NAMES={all:'TIU CPNS (semua kategori)',analogi:'Analogi Verbal',silogisme:'Silogisme dan Logika',deret:'Deret Angka dan Pola',aritmatika:'Aritmatika dan Aljabar',logika:'Logika Formal',peluang:'Peluang dan Statistik'};
+const DIFF_NAMES={mudah:'mudah',sedang:'sedang',sulit:'sulit'};
+
+async function genAIQuestion(){
+  if(!S.aiEnabled){toast('⚠️ Aktifkan toggle AI dulu');return;}
+  S.answered=false;
+  const katName=KAT_NAMES[S.kat]||'TIU CPNS';
+  const diffList=S.diffs.map(d=>DIFF_NAMES[d]).join(' atau ');
+  const diffPick=S.diffs[Math.floor(Math.random()*S.diffs.length)];
+
+  const btnAI=document.getElementById('btn-ai-gen');
+  btnAI.disabled=true;btnAI.textContent='⏳ Membuat soal...';
+
+  document.getElementById('q-area').innerHTML=`
+    <div class="q-card">
+      <div class="ai-loading">
+        <div class="ai-spin"></div>
+        <span>Claude AI sedang membuat soal ${katName} tingkat ${diffPick}...</span>
+      </div>
+    </div>`;
+
+  const systemPrompt=`Kamu adalah generator soal tes TIU CPNS dan Matematika Logika profesional untuk Indonesia.
+Buat SATU soal BARU dan UNIK untuk kategori: ${katName}, tingkat kesulitan: ${diffPick}.
+
+Kembalikan HANYA JSON valid berikut (tanpa markdown, tanpa penjelasan luar):
+{
+  "soal": "teks soal lengkap",
+  "opsi": ["A. ...", "B. ...", "C. ...", "D. ..."],
+  "jawab": "A atau B atau C atau D (satu huruf saja)",
+  "penjelasan": "penjelasan singkat mengapa jawaban tersebut benar (max 2 kalimat)",
+  "tip": "tips strategi mengerjakan soal jenis ini (max 2 kalimat)",
+  "diff": "${diffPick}",
+  "kat": "${S.kat==='all'?'aritmatika':S.kat}"
+}
+
+Pastikan:
+- Soal BARU, tidak meniru soal yang sudah umum
+- Angka-angka realistis dan bisa dihitung dengan cara manual
+- Jawaban yang benar HARUS benar secara matematis/logis
+- Format opsi: "A. [teks]", dst`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:[{role:'user',content:'Buat soal sekarang.'}]
+      })
+    });
+    const data=await res.json();
+    if(data.error){throw new Error(data.error.message);}
+    const raw=data.content.map(c=>c.text||'').join('').trim();
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const q=JSON.parse(clean);
+    q.id='ai_'+Date.now();
+    q.isAI=true;
+    S.curQ=q;S.aiCount++;
+    updHdr();
+    renderQ(q,'q-area',true);
+    toast('✨ Soal baru dari AI siap!');
+  } catch(err) {
+    console.error(err);
+    document.getElementById('q-area').innerHTML=`
+      <div class="q-card" style="text-align:center;padding:30px">
+        <div style="font-size:2rem;margin-bottom:10px">⚠️</div>
+        <div style="color:var(--red);font-weight:600;margin-bottom:8px">Gagal generate soal AI</div>
+        <div style="color:var(--text2);font-size:0.83rem;margin-bottom:16px">${err.message||'Cek koneksi internet kamu'}</div>
+        <button class="btn btn-g" onclick="loadNextQ()">Gunakan soal bank sebagai gantinya</button>
+      </div>`;
+  } finally {
+    btnAI.disabled=false;btnAI.textContent='🤖 Soal Baru dari AI';
+  }
+}
+
+// ═══════════════════════════════════════════
+// RENDER QUESTION
+// ═══════════════════════════════════════════
+const LETTERS=['A','B','C','D'];
+const DIFF_LABEL={mudah:'Mudah',sedang:'Sedang',sulit:'Sulit'};
+const KAT_LABEL={analogi:'Analogi',silogisme:'Silogisme',deret:'Deret',aritmatika:'Aritmatika',logika:'Logika',peluang:'Peluang'};
+
+function renderQ(q,cont,withFB){
+  const katLabel=KAT_LABEL[q.kat]||q.kat;
+  const diffLabel=DIFF_LABEL[q.diff]||q.diff;
+  const aiBadge=q.isAI?`<span class="ai-badge"><span class="ai-dot"></span>AI Generated</span>`:'';
+  const opts=q.opsi.map((o,i)=>{
+    const l=LETTERS[i];
+    return `<button class="opt" id="opt_${cont}_${l}" onclick="checkAns('${l}','${cont}',${withFB})">
+      <span class="opt-l">${l}</span><span>${o}</span>
+    </button>`;
+  }).join('');
+
+  document.getElementById(cont).innerHTML=`
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">#${typeof q.id==='number'?q.id:'AI'}</span>
+        <span class="badge ${q.diff}">${diffLabel}</span>
+        <span class="badge kat">${katLabel}</span>
+        ${aiBadge}
+      </div>
+      <div class="q-text">${q.soal}</div>
+      <div class="opts">${opts}</div>
+      ${withFB?`<div class="feedback" id="fb_${cont}">
+        <div class="fb-title" id="fb_title_${cont}"></div>
+        <div class="fb-body" id="fb_body_${cont}"></div>
+        <div class="tip-box" id="fb_tip_${cont}"></div>
+      </div>`:''}
+    </div>`;
+}
+
+function checkAns(sel,cont,withFB){
+  const isLatihan=cont==='q-area';
+  if(isLatihan&&S.answered)return;
+  const q=isLatihan?S.curQ:S.toQs[S.toIdx];
+  const correct=q.jawab;
+  const ok=sel===correct;
+
+  LETTERS.forEach(l=>{
+    const btn=document.getElementById(`opt_${cont}_${l}`);
+    if(!btn)return;
+    btn.disabled=true;
+    if(l===correct)btn.classList.add('correct');
+    if(l===sel&&!ok)btn.classList.add('wrong');
+  });
+
+  if(isLatihan){
+    S.answered=true;
+    if(ok){S.benar++;S.streak++;if(S.streak%5===0&&S.streak>0)toast(`🔥 Streak ${S.streak}! Keren banget!`);}
+    else{S.salah++;S.streak=0;}
+    S.total++;updHdr();updStats();
+    if(withFB){
+      const fb=document.getElementById(`fb_${cont}`);
+      const title=document.getElementById(`fb_title_${cont}`);
+      const body=document.getElementById(`fb_body_${cont}`);
+      const tip=document.getElementById(`fb_tip_${cont}`);
+      fb.className='feedback show '+(ok?'ok':'ng');
+      title.textContent=ok?'✅ Benar!':`❌ Salah — Jawaban benar: ${correct}`;
+      body.textContent=q.penjelasan;
+      tip.innerHTML=`<strong>💡 Tips:</strong> ${q.tip}`;
+    }
+  } else {
+    S.toAnss[S.toIdx]=sel;
+  }
+}
+
+// ═══════════════════════════════════════════
+// TRYOUT
+// ═══════════════════════════════════════════
+async function startTO(type){
+  let pool;
+  if(type==='ai'){await startAITryout();return;}
+  if(type==='tiu') pool=BANK;
+  else if(type==='matlog') pool=BANK.filter(q=>['aritmatika','logika','peluang','deret'].includes(q.kat));
+  else pool=BANK.filter(q=>['analogi','silogisme'].includes(q.kat));
+
+  const count=type==='tiu'?Math.min(20,pool.length):Math.min(15,pool.length);
+  const mins=type==='tiu'?25:type==='matlog'?20:15;
+  S.toQs=shuffle(pool).slice(0,count);
+  S.toIdx=0;S.toAnss=new Array(count).fill(null);
+  S.toTimeLeft=mins*60;
+
+  document.getElementById('to-home').style.display='none';
+  document.getElementById('to-result').style.display='none';
+  document.getElementById('to-session').style.display='block';
+  document.getElementById('to-tot').textContent=count;
+  renderTOQ();startTOTimer();
+}
+
+async function startAITryout(){
+  document.getElementById('to-home').innerHTML=`
+    <div class="ai-loading" style="padding:60px 20px;flex-direction:column;gap:16px">
+      <div class="ai-spin" style="width:32px;height:32px;border-width:3px"></div>
+      <span>Claude AI sedang membuat 10 soal untuk try out kamu...<br><span style="font-size:0.78rem;color:var(--text3)">Ini mungkin memerlukan ~15 detik</span></span>
+    </div>`;
+
+  const prompt=`Buat 10 soal TIU CPNS yang beragam (campuran analogi, silogisme, deret, aritmatika, logika, peluang) dengan tingkat kesulitan bervariasi.
+
+Kembalikan HANYA array JSON (tanpa markdown):
+[
+  {
+    "soal": "...",
+    "opsi": ["A. ...", "B. ...", "C. ...", "D. ..."],
+    "jawab": "A/B/C/D",
+    "penjelasan": "penjelasan singkat",
+    "tip": "tips strategi",
+    "diff": "mudah/sedang/sulit",
+    "kat": "analogi/silogisme/deret/aritmatika/logika/peluang"
+  }
+]
+
+Pastikan 10 soal, semua jawaban benar secara logis/matematis, soal bervariasi.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:4000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    const raw=data.content.map(c=>c.text||'').join('').trim();
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const qs=JSON.parse(clean);
+    qs.forEach((q,i)=>{q.id='ai_to_'+i;q.isAI=true;});
+    S.toQs=qs;S.toIdx=0;S.toAnss=new Array(qs.length).fill(null);
+    S.toTimeLeft=15*60;S.aiCount+=qs.length;updHdr();
+    document.getElementById('to-home').innerHTML=`<div id="to-home-inner"></div>`;
+    document.getElementById('to-session').style.display='block';
+    document.getElementById('to-tot').textContent=qs.length;
+    renderTOQ();startTOTimer();
+    toast('🤖 10 soal AI siap!');
+  }catch(err){
+    document.getElementById('to-home').innerHTML=`
+      <div class="to-hero">
+        <div style="font-size:3rem">⚠️</div>
+        <h2 style="color:var(--red);margin:12px 0">Gagal Generate Soal AI</h2>
+        <p>${err.message||'Cek koneksi internet'}</p>
+        <button class="btn btn-g" style="margin:16px auto;display:block" onclick="location.reload()">↩ Kembali</button>
+      </div>`;
+  }
+}
+
+function renderTOQ(){
+  const q=S.toQs[S.toIdx];
+  document.getElementById('to-cur').textContent=S.toIdx+1;
+  document.getElementById('to-pbar').style.width=(S.toIdx/S.toQs.length*100)+'%';
+  renderQ(q,'to-q-area',false);
+  if(S.toAnss[S.toIdx]){
+    document.getElementById(`opt_to-q-area_${S.toAnss[S.toIdx]}`)?.classList.add('correct');
+  }
+}
+function toNext(){
+  if(S.toIdx<S.toQs.length-1){S.toIdx++;renderTOQ();}
+  else finishTO();
+}
+function startTOTimer(){
+  if(S.toTimerRef)clearInterval(S.toTimerRef);
+  S.toTimerRef=setInterval(()=>{
+    S.toTimeLeft--;
+    const m=Math.floor(S.toTimeLeft/60),s=S.toTimeLeft%60;
+    const el=document.getElementById('to-timer');
+    if(el){el.textContent=`${m}:${s.toString().padStart(2,'0')}`;el.className='timer'+(S.toTimeLeft<120?' urgent':'');}
+    if(S.toTimeLeft<=0)finishTO();
+  },1000);
+}
+function finishTO(){
+  clearInterval(S.toTimerRef);
+  const qs=S.toQs,ans=S.toAnss;
+  let benar=0;qs.forEach((q,i)=>{if(ans[i]===q.jawab)benar++;});
+  const pct=Math.round(benar/qs.length*100);
+  const em=pct>=80?'🏆':pct>=60?'🥈':pct>=40?'🥉':'💪';
+  const msg=pct>=80?'Luar Biasa! Kamu siap ujian CPNS!':pct>=60?'Bagus! Sedikit lagi bisa maksimal':pct>=40?'Lumayan, perbanyak latihan!':'Semangat! Terus berlatih setiap hari!';
+
+  document.getElementById('to-session').style.display='none';
+  document.getElementById('to-result').style.display='block';
+
+  const reviewHTML=qs.map((q,i)=>{
+    const ok=ans[i]===q.jawab;
+    return `<div class="review-item ${ok?'ok':'ng'}">
+      <div class="review-q">${ok?'✅':'❌'} ${q.soal.substring(0,70)}${q.soal.length>70?'...':''}</div>
+      <div class="review-ans">Kamu: <span style="color:${ok?'var(--green)':'var(--red)'};">${ans[i]||'—'}</span> &nbsp;|&nbsp; Benar: <b>${q.jawab}</b></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('to-result').innerHTML=`
+    <div class="result-wrap">
+      <div class="result-emoji">${em}</div>
+      <div class="result-score">${benar}/${qs.length}</div>
+      <div style="font-size:2rem;font-weight:800;margin-bottom:6px">${pct}%</div>
+      <div class="result-msg">${msg}</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+        <button class="btn btn-p" onclick="document.getElementById('to-home').style.display='block';document.getElementById('to-result').style.display='none'">🔄 Try Out Lagi</button>
+        <button class="btn btn-g" onclick="gotoPage('latihan')">📚 Latihan Lagi</button>
+      </div>
+    </div>
+    <div class="review-list">${reviewHTML}</div>`;
+}
+
+// ═══════════════════════════════════════════
+// MATERI
+// ═══════════════════════════════════════════
+const MATERI={
+  analogi:`<div class="mat-detail"><h3>🔗 Analogi Verbal</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">Jenis Hubungan</div><div class="ff">Sebab→Akibat<br>Bagian→Keseluruhan<br>Fungsi/Kegunaan<br>Kreator→Karya<br>Profesi→Tempat</div></div>
+    <div class="fitem"><div class="fn">Strategi</div><div class="ff">1. Buat kalimat hubungan<br>2. Uji semua pilihan<br>3. Pilih paling SPESIFIK</div><div class="fe">Contoh: "X berfungsi untuk Y"</div></div>
+    <div class="fitem"><div class="fn">Contoh Soal</div><div class="ff">PISAU : MEMOTONG = PENA : ?<br>→ MENULIS (fungsi alat)</div></div>
+    <div class="fitem"><div class="fn">Contoh Soal</div><div class="ff">HAKIM : PENGADILAN = CHEF : ?<br>→ DAPUR (profesi-tempat)</div></div>
+  </div></div>`,
+  silogisme:`<div class="mat-detail"><h3>🧩 Silogisme & Logika</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">Modus Ponens</div><div class="ff">P→Q, P ⊢ Q</div><div class="fe">Semua A→B, x∈A → x∈B</div></div>
+    <div class="fitem"><div class="fn">Modus Tollens</div><div class="ff">P→Q, ¬Q ⊢ ¬P</div><div class="fe">Invers kontraposisi yang valid</div></div>
+    <div class="fitem"><div class="fn">Kontraposisi</div><div class="ff">P→Q ≡ ¬Q→¬P<br>SETARA dengan aslinya</div></div>
+    <div class="fitem"><div class="fn">Negasi Kuantor</div><div class="ff">¬(∀x P) = ∃x ¬P<br>"Semua" ↔ "Ada yang tidak"</div></div>
+  </div></div>`,
+  deret:`<div class="mat-detail"><h3>🔢 Deret Angka</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">Aritmatika</div><div class="ff">Un = a+(n-1)d</div><div class="fe">1,4,7,10 → d=3, U₅=13</div></div>
+    <div class="fitem"><div class="fn">Geometri</div><div class="ff">Un = a·r^(n-1)</div><div class="fe">2,6,18 → r=3, U₄=54</div></div>
+    <div class="fitem"><div class="fn">Fibonacci</div><div class="ff">Uₙ = Uₙ₋₁+Uₙ₋₂<br>1,1,2,3,5,8,13,21...</div></div>
+    <div class="fitem"><div class="fn">Langkah Analisis</div><div class="ff">1. Hitung beda tingkat 1<br>2. Jika tidak konstan → beda 2<br>3. Jika tak konstan → coba rasio</div></div>
+  </div></div>`,
+  aritmatika:`<div class="mat-detail"><h3>📐 Aritmatika & Aljabar</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">% Cepat</div><div class="ff">10%=÷10, 1%=÷100<br>25%=÷4, 50%=÷2<br>15%=10%+5%</div></div>
+    <div class="fitem"><div class="fn">Rasio</div><div class="ff">a:b → a/(a+b)×total</div><div class="fe">3:5, total=160 → 60 dan 100</div></div>
+    <div class="fitem"><div class="fn">Pekerjaan</div><div class="ff">1/t = 1/tA+1/tB<br>t = tA×tB/(tA+tB)</div></div>
+    <div class="fitem"><div class="fn">Kejar-mengejar</div><div class="ff">t = d_awal / Δv<br>d_awal = v₁ × Δt_berangkat</div></div>
+  </div></div>`,
+  peluang:`<div class="mat-detail"><h3>🎲 Peluang & Statistik</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">Peluang Dasar</div><div class="ff">P(A) = n(A)/n(S)<br>P(A') = 1-P(A)</div></div>
+    <div class="fitem"><div class="fn">Kombinasi</div><div class="ff">C(n,r) = n!/(r!(n-r)!)<br>Urutan tidak penting</div><div class="fe">C(5,2)=10</div></div>
+    <div class="fitem"><div class="fn">Permutasi</div><div class="ff">P(n,r) = n!/(n-r)!<br>Urutan penting</div><div class="fe">P(5,2)=20</div></div>
+    <div class="fitem"><div class="fn">Statistik</div><div class="ff">Mean=Σx/n<br>Median=nilai tengah<br>Modus=nilai terbanyak</div></div>
+  </div></div>`,
+  logika:`<div class="mat-detail"><h3>🧠 Logika Formal</h3><div class="fgrid">
+    <div class="fitem"><div class="fn">Operator</div><div class="ff">∧ = dan (konjungsi)<br>∨ = atau (disjungsi)<br>→ = jika...maka<br>↔ = jika dan hanya jika</div></div>
+    <div class="fitem"><div class="fn">Tabel Kebenaran P→Q</div><div class="ff">T→T = T<br>T→F = F<br>F→T = T<br>F→F = T</div></div>
+    <div class="fitem"><div class="fn">4 Bentuk Implikasi</div><div class="ff">P→Q (asli)<br>Q→P (konvers, ≠ asli)<br>¬P→¬Q (invers, ≠ asli)<br>¬Q→¬P (kontraposisi, ≡ asli)</div></div>
+    <div class="fitem"><div class="fn">Negasi</div><div class="ff">¬(P∧Q) = ¬P∨¬Q<br>¬(P∨Q) = ¬P∧¬Q<br>(De Morgan)</div></div>
+  </div></div>`,
+};
+function showMat(k){
+  document.getElementById('mat-content').innerHTML=MATERI[k]||'';
+  document.getElementById('mat-content').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+loadNextQ();
+</script>
+</body>
+</html>
